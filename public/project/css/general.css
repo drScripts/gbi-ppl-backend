@@ -1,0 +1,12 @@
+img.thumbnails-image {
+    width: 50%;
+}
+
+img.mid-thumbnails-image {
+    width: 75%;
+}
+
+.mid-height {
+    height: 100px;
+    overflow: hidden;
+}
