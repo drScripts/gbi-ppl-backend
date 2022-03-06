@@ -9,6 +9,7 @@ use App\Http\Controllers\API\SuperAdmin\UsersController as SuperAdminUsersContro
 use App\Http\Controllers\API\UsersController;
 use App\Http\Controllers\API\RegionsController;
 use App\Http\Controllers\API\SchedulesController;
+use App\Http\Controllers\API\UserNotification;
 use App\Http\Controllers\API\YoutubeController;
 use Illuminate\Support\Facades\Route;
 
@@ -72,6 +73,10 @@ Route::middleware('auth.admin')->group(function () {
 
     Route::controller(AttendanceController::class)->group(function () {
         Route::put('/attendance/d', 'setAttendance');
+    });
+
+    Route::prefix("notification")->controller(UserNotification::class)->group(function () {
+        Route::get("/", "getAllToken");
     });
 
     Route::prefix('announcement')->controller(AnnouncementController::class)->group(function () {

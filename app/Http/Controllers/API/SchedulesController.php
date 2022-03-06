@@ -136,7 +136,7 @@ class SchedulesController extends Controller
 
             $schedules = Schedules::with("region")->where('cabang_id', $payload['cabang_id'])->where("date_event", '>=', date("Y-m-d"))->where("event_begin", ">=", date("Y-m-d H:i:s", strtotime("now") - 1800))->get();
 
-            return ResponseFormatter::success($schedules, "Success Delete Data");
+            return ResponseFormatter::success($schedules, "Success Get Data");
         } catch (Exception $err) {
             return ResponseFormatter::error([], $err->getMessage(), $err->getCode());
         }

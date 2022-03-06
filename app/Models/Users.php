@@ -29,14 +29,12 @@ class Users extends Model
         'role',
         'password',
         'remember_token',
-        'push_notif_token',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
         'otp',
-        'push_notif_token',
     ];
 
     public function getCreatedAtAttribute($value)
@@ -66,7 +64,12 @@ class Users extends Model
 
     public function attendance()
     {
-        return $this->hasOne(Attendances::class, 'id', 'user_id');
+        return $this->hasOne(Attendances::class, 'user_id', 'id');
+    }
+
+    public function notification()
+    {
+        return $this->hasMany(PushNotification::class, 'user_id', 'id');
     }
 
     /**
