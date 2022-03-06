@@ -29,12 +29,14 @@ class Users extends Model
         'role',
         'password',
         'remember_token',
+        'push_notif_token',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
         'otp',
+        'push_notif_token',
     ];
 
     public function getCreatedAtAttribute($value)
