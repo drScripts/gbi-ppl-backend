@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddUserNotificationColumn extends Migration
+class CreatePushNotificationTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddUserNotificationColumn extends Migration
      */
     public function up()
     {
-        Schema::table("users", function (Blueprint $table) {
-            $table->string('push_notif_token')->nullable()->after("password");
+        Schema::create('push_notification', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger("user_id");
+            $table->string('token');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddUserNotificationColumn extends Migration
      */
     public function down()
     {
-        Schema::table("users", function (Blueprint $table) {
-            $table->dropColumn("push_notif_token");
-        });
+        Schema::dropIfExists('push_notification');
     }
 }
