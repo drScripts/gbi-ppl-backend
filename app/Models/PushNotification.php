@@ -19,4 +19,9 @@ class PushNotification extends Model
     protected $hidden = [
         'token',
     ];
+
+    public function user()
+    {
+        return $this->hasOne(Users::class, 'id', 'user_id');
+    }
 }

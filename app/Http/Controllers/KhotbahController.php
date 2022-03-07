@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\SendNotification;
 use App\Models\Khotbah;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class KhotbahController extends Controller
 {
+
+    private $notificationHelpers;
+
+    function __construct()
+    {
+        $this->notificationHelpers = new SendNotification();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -51,6 +60,8 @@ class KhotbahController extends Controller
         $user = userInfo();
 
         $fileName = $request->file('banner')->store('khotbah');
+
+        $this->notificationHelpers->broadcastLocal($request->title, "Ringkasan Khotbah baru buat kamu - " . $request->bahan);
 
         Khotbah::create([
             'title' => $request->title,

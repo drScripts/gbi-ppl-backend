@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\SendNotification;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class AnnouncementController extends Controller
 {
+    private $notificationHelpers;
+
+
+    public function __construct()
+    {
+        $this->notificationHelpers = new SendNotification();
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -49,6 +58,8 @@ class AnnouncementController extends Controller
         $user = userInfo();
 
         $fileName = $request->file('banner')->store('announcement');
+
+        $this->notificationHelpers->broadcastLocal($request->title, $request->description);
 
         Announcement::create([
             'cabang_id' => $user['cabang_id'],
@@ -127,8 +138,11 @@ class AnnouncementController extends Controller
     {
         $announcement = Announcement::find($id);
 
-        if (Storage::exists($announcement['image_path'])) {
-            Storage::delete($announcement['image_path']);
+        $tempFilePath = explode(env("APP_URL") . "/" . "storage/", $announcement['image_path']);
+        $tempFilePath = end($tempFilePath);
+
+        if (Storage::exists($tempFilePath)) {
+            Storage::delete($tempFilePath);
         }
         $announcement->delete();
 
