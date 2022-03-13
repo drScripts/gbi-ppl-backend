@@ -14,7 +14,7 @@ class AddColumnAnnouncementBody extends Migration
     public function up()
     {
         Schema::table('announcement', function (Blueprint $table) {
-            $table->text('body')->after('description')->change();
+            $table->text('body')->after('description');
         });
     }
 
