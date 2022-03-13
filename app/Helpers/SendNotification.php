@@ -15,7 +15,7 @@ class SendNotification
         $this->postFunction($data);
     }
 
-    public function broadcastLocal(string $title, string $body)
+    public function broadcastLocal(string $title, string $body, array $data = [])
     {
 
         $notifications = PushNotification::whereHas("user", function (Builder $query) {
@@ -29,6 +29,7 @@ class SendNotification
                 'to' => $notif['token'],
                 'title' => $title,
                 'body' => $body,
+                'data' => json_encode($data),
             ]);
         }
     }

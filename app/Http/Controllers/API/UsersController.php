@@ -6,6 +6,7 @@ use App\Helpers\JWTGenerator;
 use App\Helpers\OtpHelpers;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
+use App\Models\PushNotification;
 use App\Models\Regions;
 use App\Models\Users;
 use App\Models\UsersVaccine;
@@ -243,7 +244,6 @@ class UsersController extends Controller
         }
     }
 
-
     public function showVaccinePicture($filename)
     {
         try {
@@ -287,6 +287,39 @@ class UsersController extends Controller
             }
 
             return ResponseFormatter::success($user, 'Success Add Profile Picture');
+        } catch (Exception $err) {
+            return ResponseFormatter::error([], $err->getMessage(), $err->getCode());
+        }
+    }
+
+    public function registerNotification(Request $request)
+    {
+        try {
+            $payload = $request->attributes->get("payload");
+
+            $token = $request->token;
+
+            PushNotification::firstOrCreate([
+                'user_id' => $payload['id'],
+                'token' => $token
+            ]);
+
+            return ResponseFormatter::success([], 'Success Register User Token');
+        } catch (Exception $err) {
+            return ResponseFormatter::error([], $err->getMessage(), $err->getCode());
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        try {
+
+            $payload = $request->attributes->get("payload");
+
+            $token = PushNotification::find($payload['id']);
+            $token->delete();
+
+            return ResponseFormatter::success([], 'Success Unregister User Token');
         } catch (Exception $err) {
             return ResponseFormatter::error([], $err->getMessage(), $err->getCode());
         }

@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\SendNotification;
 use App\Models\Schedules;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
+
+    private $announcementHelpers;
+
+    function __construct()
+    {
+        $this->announcementHelpers = new SendNotification();
+    }
 
     public function index(Request $request)
     {
@@ -44,6 +52,8 @@ class ScheduleController extends Controller
             'event_end' => $end,
             'date_event' => $date,
         ]);
+
+        $this->announcementHelpers->broadcastLocal('New Schedule Added', 'Ada schedule ibadah baru nih!', ['url' => 'schedule']);
 
         return redirect("/schedule")->with("success_form", "Success Add Data!");
     }
@@ -97,19 +107,31 @@ class ScheduleController extends Controller
         $schedules = Schedules::where('cabang_id', $user['cabang_id'])->with('region')->get();
 
         foreach ($schedules as $schedule) {
+            $oneWeek = 60 * 60 * 24 * 7;
+
+            $newDate = strtotime($schedule->date_event);
+            $newDate = date("Y-m-d", $newDate + $oneWeek);
+
+            $eventBegin = explode(" ", $schedule->toArray()['event_begin']);
+            $eventEnd = explode(" ", $schedule->toArray()['event_end']);
+
+            $newEventBegin = $newDate . " " . end($eventBegin);
+            $newEventEnd = $newDate . " " . end($eventEnd);
+
+
             Schedules::create([
                 'cabang_id' => $schedule->cabang_id,
                 'max_people' => $schedule->max_people,
-                'event_begin' => $schedule->event_begin,
-                'event_end' => $schedule->event_end,
-                'date_event' => $schedule->date_event,
+                'event_begin' => $newEventBegin,
+                'event_end' => $newEventEnd,
+                'date_event' => $newDate,
             ]);
         }
 
         $schedules->each(function ($data, $key) {
             $data->delete();
         });
-
+        $this->announcementHelpers->broadcastLocal("New Schedule Available!", 'Jadwal ibadah terbaru sudah tersedia nih, yuk daftar!', ['url' => 'schedule']);
         return redirect("/schedule")->with("warning_form", 'Success Reset Data !');
     }
 

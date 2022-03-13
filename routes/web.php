@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\API\NotificationTest;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KhotbahController;
@@ -76,4 +77,8 @@ Route::middleware('auth.web.super')->group(function () {
         Route::get('/', 'index');
         Route::get('/{id}/u/', 'edit');
     });
+});
+
+Route::prefix('notiication')->controller(NotificationTest::class)->group(function () {
+    Route::get('/test', 'test');
 });

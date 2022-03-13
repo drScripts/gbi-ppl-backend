@@ -109,5 +109,7 @@ Route::middleware('auth.userAdmin')->group(function () {
         Route::post('/vaccine', 'addVaccine');
         Route::get("vaccine/image/{fileName}", 'showVaccinePicture');
         Route::put("/addProfile", 'addProfilePicture');
+        Route::post("/registerToken", 'registerNotification');
+        Route::post("/logout", 'logout');
     });
 });
