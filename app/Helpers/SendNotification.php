@@ -21,12 +21,18 @@ class SendNotification
         $notifications = PushNotification::whereHas("user", function (Builder $query) {
             $adminInfo = userInfo();
             $query->where("cabang_id", $adminInfo['cabang_id']);
-        })->get();
+        })->select("token")->get();
 
+        $tokens = [];
 
         foreach ($notifications as $notif) {
+            $tokens[] = $notif['token'];
+        }
+        $tokens = array_unique($tokens);
+
+        foreach ($tokens as $token) {
             $this->postFunction([
-                'to' => $notif['token'],
+                'to' => $token,
                 'title' => $title,
                 'body' => $body,
                 'data' => json_encode($data),
