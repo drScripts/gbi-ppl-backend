@@ -25,8 +25,5 @@ class AddColumnAnnouncementBody extends Migration
      */
     public function down()
     {
-        Schema::table('announcement', function (Blueprint $table) {
-            $table->removeColumn('body');
-        });
     }
 }
