@@ -11,18 +11,21 @@ class DashboardController extends Controller
 {
     public function index()
     {
-
-        $grafik = Attendances::whereYear('created_at', date('Y'))->whereHas("schedule", function ($q) {
-            $user = userInfo();
-            $q->where("cabang_id", $user['cabang_id']);
-        })->selectRaw('year(created_at) year, monthname(created_at) month, count(*) data')
-            ->groupBy('year', 'month')->get()->toArray();
         $month = [];
         $data = [];
+        try {
+            $grafik = Attendances::whereYear('created_at', date('Y'))->whereHas("schedule", function ($q) {
+                $user = userInfo();
+                $q->where("cabang_id", $user['cabang_id']);
+            })->selectRaw('year(created_at) year, monthname(created_at) month, count(*) data')
+                ->groupBy('year', 'month')->get()->toArray();
 
-        foreach ($grafik as $attendances) {
-            $month[] = $attendances['month'];
-            $data[] = $attendances['data'];
+            foreach ($grafik as $attendances) {
+                $month[] = $attendances['month'];
+                $data[] = $attendances['data'];
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
         }
 
         $user = userInfo();
