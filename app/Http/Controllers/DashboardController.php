@@ -15,16 +15,15 @@ class DashboardController extends Controller
         $grafik = Attendances::whereYear('created_at', date('Y'))->whereHas("schedule", function ($q) {
             $user = userInfo();
             $q->where("cabang_id", $user['cabang_id']);
-        })->get()->toArray();
-        // ->selectRaw('year(created_at) year, monthname(created_at) month, count(*) data')
-        // ->groupBy('year', 'month')
+        })->selectRaw('year(created_at) year, monthname(created_at) month, count(*) data')
+            ->groupBy('year', 'month')->get()->toArray();
         $month = [];
         $data = [];
 
-        // foreach ($grafik as $attendances) {
-        //     $month[] = $attendances['month'];
-        //     $data[] = $attendances['data'];
-        // }
+        foreach ($grafik as $attendances) {
+            $month[] = $attendances['month'];
+            $data[] = $attendances['data'];
+        }
 
         $user = userInfo();
 
