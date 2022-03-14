@@ -28,15 +28,19 @@ class SendNotification
         foreach ($notifications as $notif) {
             $tokens[] = $notif['token'];
         }
+
         $tokens = array_unique($tokens);
 
         foreach ($tokens as $token) {
-            $this->postFunction([
+            $postData = [
                 'to' => $token,
                 'title' => $title,
                 'body' => $body,
-                'data' => json_encode($data),
-            ]);
+            ];
+            if ($data) {
+                $postData['data'] = json_encode($data);
+            }
+            $this->postFunction($postData);
         }
     }
 
@@ -50,11 +54,11 @@ class SendNotification
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
-        curl_exec($ch);
+        $res = curl_exec($ch);
         if (curl_error($ch)) {
             Log::debug(curl_error($ch));
         }
-
+        // Log::debug($res);
         curl_close($ch);
     }
 }
